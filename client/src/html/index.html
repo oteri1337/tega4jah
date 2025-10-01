@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+    <link rel="shortcut icon" href="/assets/images/pwa/favicon.ico">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    </head>
+
+  <body>
+      <noscript> You need to enable JavaScript to run this app. </noscript>
+
+      <div id="root">
+          <div class="progress"><div class="indeterminate"></div>
+      </div>
+
+      <script>
+        function initMap() {
+          var script = document.createElement("script");
+          script.src = "/dispatch.js";
+          document.body.appendChild(script);
+        }
+      </script>
+
+      <script async src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&loading=async&callback=initMap&libraries=marker"></script>
+       
+      </body>
+</html>

@@ -1,0 +1,124 @@
+  <!DOCTYPE html>
+  <html>
+    <head>
+
+      <title>{{ NODE_NAME }}</title>
+
+      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+      <style>
+
+        html {
+          font-size: 11px;
+        }
+
+        .sidenav li>a {
+            display: inline;
+            padding-left: 5px;
+        }
+
+        .sidenav li>span {
+            padding-left: 30px;
+        }   
+
+        .top {
+            top: 8px;
+            position: relative;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+
+        iframe {
+            border: 0;
+            height: 900px;
+            width: 100%;
+            border: 1px solid silver;
+        }
+
+        .btn {
+          margin-top: 5px;
+        }
+
+        .mt5 {
+          margin-top: 10px;
+        }
+    
+      </style>
+
+    </head>
+
+    <body>
+
+      <ul id="slide-out" class="sidenav">
+          <li class="waves-effect">
+            <span class="material-symbols-outlined top">search</span>
+            <a href="/domains-search">DOMAINS SEARCH</a>
+          </li>
+      </ul>
+
+
+      <div class="navbar-fixed">
+        <nav>
+            <ul class="left">
+
+              <li>
+                <a data-target="slide-out" class="sidenav-trigger show-on-large">
+                  <span class="material-symbols-outlined top">menu</span>
+                </a>
+              </li>
+
+              <li> 
+                <b>
+                  <a href="/">{{ NODE_NAME }}</a>
+                </b>
+              </li>
+            </ul>
+
+            <ul class="right ">
+
+
+
+              <li>
+                <a href="/domains-search">
+                <span class="material-symbols-outlined top">shopping_cart</span>
+              </li>
+
+
+            </ul>
+        </nav>
+      </div>
+
+      <main>
+        <noscript> You need to enable JavaScript to run this app. </noscript>
+  
+        <div id="root">
+            <div class="progress"><div class="indeterminate"></div>
+        </div>
+
+      </main>
+    
+    </body>
+
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+
+     <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems, {});
+        });
+     </script>
+
+      <script src="/app.js"></script></body>
+
+
+  </html>
