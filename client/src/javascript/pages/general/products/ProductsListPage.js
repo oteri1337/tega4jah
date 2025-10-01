@@ -51,7 +51,12 @@ const ProductCard = ({ product }) => {
 
         <br />
         <br />
-        <button className="btn">BUY</button>
+        <a
+          href={`https://wa.me/+2348169337785?text=hello, i would like to buy ${product.name} ${image}`}
+          className="btn"
+        >
+          BUY
+        </a>
         <br />
         <br />
       </div>
