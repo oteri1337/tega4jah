@@ -30,7 +30,7 @@ class Connection
             'driver' => $_ENV["DB_DRIVER"],
             'password' => $_ENV["DB_PASS"],
             'username' =>  $_ENV["DB_USER"],
-            'database' =>  $_ENV["DB_NAME"]."_admin",
+            'database' =>  $_ENV["DB_NAME"],
         ];
 
         $capsule = new Manager;
