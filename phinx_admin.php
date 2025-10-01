@@ -17,7 +17,6 @@ return [
             'host' => $_ENV["DB_HOST"],
             'port' => $_ENV["DB_PORT"],
             'adapter' => $_ENV["DB_DRIVER"],
-            'unix_socket' => $_ENV["DB_SOCKET"]
         ]
     ],
     'templates' => ['file' => 'database/Migrations/template.txt'],
