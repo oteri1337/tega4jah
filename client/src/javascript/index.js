@@ -1,8 +1,10 @@
 import React from "react";
+import Routes from "./routes";
 import Router from "./routing/Router";
-import { createRoot } from "react-dom/client";
-import AppProvider from "./providers/DataProvider";
 import reducer from "./reducers/rootReducer";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import AppProvider from "./providers/DataProvider";
 
 async function renderApp() {
   let data = await JSON.parse(localStorage.getItem("data"));
@@ -14,7 +16,9 @@ async function renderApp() {
 
   root.render(
     <AppProvider initialState={data}>
-      <Router />
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
     </AppProvider>
   );
 }

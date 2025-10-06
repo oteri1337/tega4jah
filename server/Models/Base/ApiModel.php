@@ -9,25 +9,17 @@ class ApiModel extends Model
 {
 
 
-    protected $apiWith = [];
+    public $apiReadBy = "id";
 
-    protected $apiReadBy = "id";
+    public $apiPerPage = 100;
 
-    protected $apiPerPage = 700;
+    public $apiOrder = "desc";
 
-    protected $apiOrder = "id:desc";
+    public $apiOrderBy = "id";
 
-    protected $apiSearchBy = "id";
+    public $apiSearchBy = "id";
 
-    protected $apiSearchKey = "id";
-
-    protected $apiSearchIcon = "default";
-
-
-    protected function serializeDate($date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
+    public $apiSearchIcon = "default";
 
 
     public $modelResponse = [
@@ -36,71 +28,6 @@ class ApiModel extends Model
         'errors' => [],
         'data' => [],
     ];
-
-
-    public static function relationships($row) {
-
-        return $row;
-    }
-
-
-    public function apiRead($attr)
-    {
-        $data = $this->where($this->apiReadBy, $attr)->first();
-
-        $data = static::relationships($data);
-    
-        $this->modelResponse['data'] = $data;
-
-        return $this->modelResponse;
-    }
-
-
-public function apiList()
-{
-    $order = $_GET['order'] ?? $this->apiOrder;
-    $orderArr = explode(":", $order, 2);
-
-    $query = $this->orderBy($orderArr[0], $orderArr[1]);
-
-    $where = $_GET['where'] ?? false;
-    if ($where) {
-        $whereArr = explode(":", $where);
-        $query = $query->where($whereArr[0], $whereArr[1]);
-    }
-
-    $paginator = $query->paginate($this->apiPerPage);
-
-    // Apply relationships to each item
-    $paginator->getCollection()->transform(function ($row) {
-        return static::relationships($row);
-    });
-
-    $this->modelResponse['data'] = $paginator;
-
-    return $this->modelResponse;
-}
-
-
-
-    public function apiDelete($body)
-    {
-
-        if (!isset($body['id'])) {
-            $this->modelResponse['errors'] = ['id is required'];
-            return $this->modelResponse;
-        }
-
-
-        $this->where("id", $body["id"])->delete();
-
-        return $this->apiList();
-
-    }
-
-
-
-
 
 
 
@@ -112,8 +39,6 @@ public function apiList()
 
         return $this->modelResponse;
     }
-
-
 
     public function apiUpdate($body)
     {
@@ -128,9 +53,96 @@ public function apiList()
 
         $data->update($body);
 
+        $data = $this->where('id', $body['id'])->first();
+
+        $this->modelResponse['data'] = $data;
+
+        $this->modelResponse['message'] = "Updated";
+
+        return $this->modelResponse;
+    }
+
+    public function apiDelete($body)
+    {
+
+        if (!isset($body['id'])) {
+            $this->modelResponse['errors'] = ['id is required'];
+            return $this->modelResponse;
+        }
+
+        $this->where("id", $body["id"])->delete();
+
         return $this->apiList();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getListShape($paginator)
+    {
+        $paginator = $paginator->toArray();
+
+        $paginator['object'] = Collection::make($paginator['data'])->keyBy($this->apiReadBy);
+
+        $paginator['search_keys'] = $this->getSearchKeys();
+
+        return $paginator;
+    }
+
+    public function getSearchKeys()
+    {
+
+        if (getenv("NODE_ENV") == "development" && $this->apiSearchIcon != "default") {
+            return $this->all()->keyBy($this->apiSearchBy)->map(function ($item) {
+                return "http://" . $_SERVER['HTTP_HOST'] . "/uploads/images/" . $item[$this->apiSearchIcon];
+            });
+        }
+
+
+        if ($this->apiSearchIcon == "default") {
+            return $this->all()->keyBy($this->apiSearchBy)->map(function ($item) {
+                return "https://" . $_SERVER['HTTP_HOST'] . "/assets/images/pwa/android-chrome-36x36.png";
+            });
+        }
+
+        return $this->all()->keyBy($this->apiSearchBy)->map(function ($item) {
+            return "https://" . $_SERVER['HTTP_HOST'] . "/uploads/images/" . $item[$this->apiSearchIcon];
+        });
+    }
+
+    public function apiList()
+    {
+
+        $paginator = $this->orderBy($this->apiOrderBy, $this->apiOrder)->paginate($this->apiPerPage);
+
+        $data = $this->getListShape($paginator);
+
+        $this->modelResponse['data'] = $data;
+
+        return $this->modelResponse;
+    }
 
     public function apiSearch($body)
     {
@@ -153,26 +165,34 @@ public function apiList()
         return $this->modelResponse;
     }
 
-
-
-    public function getListShape($paginator)
+    public function apiRead($attr)
     {
-        $paginator = $paginator->toArray();
+        $found = $this->where($this->apiReadBy, $attr)->first();
 
-        $paginator['object'] = Collection::make($paginator['data'])->keyBy($this->apiReadBy);
+        if ($found) {
+            $found = $this->relationships($found);
+            $this->modelResponse['data'] = $found;
+            return $this->modelResponse;
+        }
 
-        $paginator['search_keys'] = $this->getSearchKeys();
-
-        return $paginator;
+        $this->modelResponse['errors'] = ['not found'];
+        return $this->modelResponse;
     }
 
 
-    public function getSearchKeys()
+
+
+
+
+
+
+
+
+    protected function serializeDate($date)
     {
-
-        return 1;
-
+        return $date->format('Y-m-d H:i:s');
     }
+
 
 
 }
